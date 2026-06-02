@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>نظام قفلة المدرسي</title>
+
+<style>
+
+body{
+font-family:Arial,sans-serif;
+background:#f5f5f5;
+margin:0;
+padding:20px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,.1);
+}
+
+h1{
+text-align:center;
+color:#0b5ed7;
+}
+
+input{
+width:100%;
+padding:10px;
+margin:5px 0;
+box-sizing:border-box;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#0b5ed7;
+color:white;
+border:none;
+cursor:pointer;
+margin-top:10px;
+font-size:16px;
+}
+
+button:hover{
+background:#084298;
+}
+
+.student{
+background:#eef4ff;
+padding:12px;
+margin-top:10px;
+border-radius:6px;
+}
+
+.menu{
+margin-top:20px;
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+.menu a{
+background:#198754;
+color:white;
+padding:10px 15px;
+text-decoration:none;
+border-radius:5px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🏫 نظام قفلة المدرسي</h1>
+
+<h3>إضافة طالب</h3>
+
+<input id="name" placeholder="اسم الطالب">
+
+<input id="studentClass" placeholder="الصف">
+
+<button onclick="addStudent()">
+إضافة الطالب
+</button>
+
+<div class="menu">
+
+<a href="grades.html">الدرجات</a>
+
+<a href="reports.html">التقارير</a>
+
+</div>
+
+<hr>
+
+<h3>قائمة الطلاب</h3>
+
+<div id="students"></div>
+
+</div>
+
+<script type="module">
+
+import {
+db,
+collection,
+addDoc,
+getDocs
+}
+from "./firebase.js";
+
+window.addStudent = async function(){
+
+const name =
+document.getElementById("name").value;
+
+const studentClass =
+document.getElementById("studentClass").value;
+
+if(!name || !studentClass){
+
+alert("أدخل البيانات كاملة");
+
+return;
+
+}
+
+await addDoc(
+collection(db,"students"),
+{
+name:name,
+class:studentClass,
+createdAt:new Date().toISOString()
+}
+);
+
+document.getElementById("name").value="";
+document.getElementById("studentClass").value="";
+
+alert("تمت إضافة الطالب");
+
+loadStudents();
+
+}
+
+async function loadStudents(){
+
+const container =
+document.getElementById("students");
+
+container.innerHTML="";
+
+const snapshot =
+await getDocs(collection(db,"students"));
+
+snapshot.forEach((doc)=>{
+
+const s = doc.data();
+
+container.innerHTML += `
+<div class="student">
+👨‍🎓 ${s.name}
+<br>
+🏫 الصف: ${s.class}
+</div>
+`;
+
+});
+
+}
+
+loadStudents();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>إدارة الدرجات</title>
+
+<style>
+
+body{
+font-family:Arial,sans-serif;
+background:#f5f5f5;
+padding:20px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,.1);
+}
+
+h1{
+text-align:center;
+color:#0b5ed7;
+}
+
+input,select{
+width:100%;
+padding:10px;
+margin:5px 0;
+box-sizing:border-box;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#0b5ed7;
+color:white;
+border:none;
+cursor:pointer;
+margin-top:10px;
+}
+
+.result{
+margin-top:20px;
+background:#eef4ff;
+padding:15px;
+border-radius:6px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>📝 إدارة الدرجات</h1>
+
+<select id="student"></select>
+
+<input id="math" type="number" placeholder="درجة الرياضيات">
+
+<input id="english" type="number" placeholder="درجة الإنجليزي">
+
+<input id="science" type="number" placeholder="درجة العلوم">
+
+<button onclick="saveGrades()">
+حفظ الدرجات
+</button>
+
+<div class="result" id="result"></div>
+
+</div>
+
+<script type="module">
+
+import {
+db,
+collection,
+addDoc,
+getDocs
+}
+from "./firebase.js";
+
+let students=[];
+
+async function loadStudents(){
+
+const snapshot=
+await getDocs(collection(db,"students"));
+
+const select=
+document.getElementById("student");
+
+select.innerHTML="";
+
+students=[];
+
+snapshot.forEach((doc)=>{
+
+const s=doc.data();
+
+students.push({
+id:doc.id,
+name:s.name
+});
+
+select.innerHTML += `
+<option value="${doc.id}">
+${s.name}
+</option>
+`;
+
+});
+
+}
+
+window.saveGrades = async function(){
+
+const studentId=
+document.getElementById("student").value;
+
+const math=
+Number(document.getElementById("math").value);
+
+const english=
+Number(document.getElementById("english").value);
+
+const science=
+Number(document.getElementById("science").value);
+
+const total=
+math+english+science;
+
+const average=
+(total/3).toFixed(2);
+
+await addDoc(
+collection(db,"grades"),
+{
+studentId,
+math,
+english,
+science,
+total,
+average,
+createdAt:new Date().toISOString()
+}
+);
+
+document.getElementById("result").innerHTML=`
+<h3>تم الحفظ بنجاح</h3>
+<p>المجموع: ${total}</p>
+<p>المعدل: ${average}</p>
+`;
+
+}
+
+loadStudents();
+
+</script>
+
+</body>
+</html>
