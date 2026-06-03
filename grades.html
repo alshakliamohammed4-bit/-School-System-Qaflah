@@ -36,6 +36,7 @@ padding:10px;
 background:green;
 color:white;
 border:none;
+cursor:pointer;
 }
 </style>
 </head>
@@ -71,24 +72,35 @@ doc
 
 const col = collection(db,"grades");
 
-// إضافة درجة
+
+// ➕ إضافة درجة
 window.addGrade = async function(){
 
+const name = document.getElementById("name").value;
+const subject = document.getElementById("subject").value;
+const grade = document.getElementById("grade").value;
+
 await addDoc(col,{
-name: name.value,
-subject: subject.value,
-grade: grade.value
+name: name,
+subject: subject,
+grade: grade
 });
 
-loadGrades();
+// تنظيف الحقول بعد الإضافة
+document.getElementById("name").value = "";
+document.getElementById("subject").value = "";
+document.getElementById("grade").value = "";
 
+loadGrades();
 }
 
-// عرض الدرجات
+
+// 📋 عرض الدرجات
 async function loadGrades(){
 
 const data = await getDocs(col);
 
+const list = document.getElementById("list");
 list.innerHTML = "";
 
 data.forEach(d=>{
@@ -110,7 +122,8 @@ list.innerHTML += `
 
 }
 
-// حذف درجة
+
+// ❌ حذف درجة
 window.deleteGrade = async function(id){
 
 await deleteDoc(doc(db,"grades",id));
@@ -119,9 +132,12 @@ loadGrades();
 
 }
 
+
+// تشغيل العرض عند فتح الصفحة
 loadGrades();
 
 </script>
 
 </body>
 </html>
+
