@@ -1,115 +1,70 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
-
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>تسجيل الدخول</title>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: linear-gradient(135deg, #1b5e20, #43a047);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
 
-<style>
+    .box {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      width: 300px;
+      color: black;
+    }
 
-body{
-font-family:Arial,sans-serif;
-background:#f5f5f5;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-}
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+    }
 
-.box{
-background:white;
-padding:25px;
-border-radius:10px;
-width:350px;
-box-shadow:0 0 10px rgba(0,0,0,.1);
-}
-
-input{
-width:100%;
-padding:10px;
-margin:8px 0;
-box-sizing:border-box;
-}
-
-button{
-width:100%;
-padding:12px;
-background:#0b5ed7;
-color:white;
-border:none;
-cursor:pointer;
-}
-
-h2{
-text-align:center;
-}
-
-</style>
+    button {
+      width: 100%;
+      padding: 10px;
+      background: green;
+      color: white;
+      border: none;
+    }
+  </style>
 </head>
-
 <body>
 
 <div class="box">
+  <h2>School Login</h2>
 
-<h2>🏫 نظام قفلة المدرسي</h2>
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
 
-<input
-id="email"
-type="email"
-placeholder="البريد الإلكتروني">
+  <button onclick="login()">Login</button>
 
-<input
-id="password"
-type="password"
-placeholder="كلمة المرور">
-
-<button onclick="login()">
-تسجيل الدخول
-</button>
-
+  <p id="msg"></p>
 </div>
 
 <script type="module">
+import { auth } from './firebase.js';
+import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-import {
-auth,
-signInWithEmailAndPassword
+window.login = async function () {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    window.location.href = "dashboard.html";
+  } catch (e) {
+    document.getElementById("msg").innerText = "خطأ في تسجيل الدخول";
+  }
 }
-from "./firebase.js";
-
-window.login = async function(){
-
-const email =
-document.getElementById("email").value;
-
-const password =
-document.getElementById("password").value;
-
-try{
-
-await signInWithEmailAndPassword(
-auth,
-email,
-password
-);
-
-alert("تم تسجيل الدخول بنجاح");
-
-window.location.href="index.html";
-
-}
-catch(error){
-
-alert(
-"خطأ في تسجيل الدخول: "
-+ error.message
-);
-
-}
-
-}
-
 </script>
 
 </body>
