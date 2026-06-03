@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المواد الدراسية</title>
+
+<style>
+body{
+font-family:Arial,sans-serif;
+background:#f5f5f5;
+padding:20px;
+}
+
+h1{
+text-align:center;
+color:#0b5ed7;
+}
+
+.box{
+background:white;
+padding:15px;
+margin:10px 0;
+border-radius:10px;
+box-shadow:0 0 10px #ddd;
+}
+
+input{
+width:100%;
+padding:10px;
+margin:5px 0;
+}
+
+button{
+width:100%;
+padding:10px;
+background:#198754;
+color:white;
+border:none;
+}
+</style>
+</head>
+
+<body>
+
+<h1>📚 إدارة المواد الدراسية</h1>
+
+<div class="box">
+
+<input id="subjectName" placeholder="اسم المادة">
+<input id="gradeLevel" placeholder="الصف (مثال: السابع)">
+
+<button onclick="addSubject()">إضافة مادة</button>
+
+</div>
+
+<h2>📋 قائمة المواد</h2>
+
+<div id="list"></div>
+
+<script type="module">
+
+import {
+db,
+collection,
+addDoc,
+getDocs,
+deleteDoc,
+doc
+} from "./firebase.js";
+
+const col = collection(db,"subjects");
+
+// إضافة مادة
+window.addSubject = async function(){
+
+await addDoc(col,{
+name: subjectName.value,
+grade: gradeLevel.value
+});
+
+loadSubjects();
+
+}
+
+// عرض المواد
+async function loadSubjects(){
+
+const data = await getDocs(col);
+
+list.innerHTML = "";
+
+data.forEach(d=>{
+
+let s = d.data();
+
+list.innerHTML += `
+<div class="box">
+<b>المادة:</b> ${s.name}<br>
+<b>الصف:</b> ${s.grade}<br><br>
+
+<button onclick="deleteSubject('${d.id}')">
+حذف
+</button>
+</div>
+`;
+});
+
+}
+
+// حذف مادة
+window.deleteSubject = async function(id){
+
+await deleteDoc(doc(db,"subjects",id));
+
+loadSubjects();
+
+}
+
+loadSubjects();
+
+</script>
+
+</body>
+</html>
