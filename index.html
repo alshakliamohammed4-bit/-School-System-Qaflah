@@ -1,11 +1,84 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta http-equiv="refresh" content="0; url=dashboard.html">
-<title>جاري التحويل...</title>
-</head>
-<body>
-<p>جاري الدخول إلى النظام...</p>
-</body>
-</html>
+<script type="module">
+
+import {
+db,
+collection,
+addDoc,
+getDocs
+}
+from "./firebase.js";
+
+window.addStudent = async function(){
+
+const name =
+document.getElementById("name").value;
+
+const studentClass =
+document.getElementById("studentClass").value;
+
+if(!name || !studentClass){
+
+alert("أدخل البيانات كاملة");
+
+return;
+
+}
+
+await addDoc(
+collection(db,"students"),
+{
+name:name,
+class:studentClass,
+createdAt:new Date().toISOString()
+}
+);
+
+document.getElementById("name").value="";
+document.getElementById("studentClass").value="";
+
+alert("تمت إضافة الطالب");
+
+loadStudents();
+
+}
+
+async function loadStudents(){
+
+const container =
+document.getElementById("students");
+
+container.innerHTML="";
+
+const snapshot =
+await getDocs(collection(db,"students"));
+
+let count = 0;
+
+snapshot.forEach((doc)=>{
+
+count++;
+
+const s = doc.data();
+
+container.innerHTML += `
+<div class="student">
+👨‍🎓 ${s.name}
+<br>
+🏫 الصف: ${s.class}
+</div>
+`;
+
+});
+
+const studentsCount =
+document.getElementById("studentsCount");
+
+if(studentsCount){
+studentsCount.textContent = count;
+}
+
+}
+
+loadStudents();
+
+</script>
