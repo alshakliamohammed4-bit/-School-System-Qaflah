@@ -1,18 +1,24 @@
-import { auth, onAuthStateChanged } from "./firebase.js";
-
-onAuthStateChanged(auth, (user) => {
-    if (!user) {
-        window.location.href = "login.html";
-    }
-});
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
 <meta charset="UTF-8">
-<title>الطلاب</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>إدارة الطلاب</title>
+
 <style>
-body{font-family:Arial;background:#f5f5f5;padding:20px}
-h1{text-align:center;color:green}
+
+body{
+font-family:Arial,sans-serif;
+background:#f5f5f5;
+padding:20px;
+}
+
+h1{
+text-align:center;
+color:green;
+}
 
 .box{
 background:white;
@@ -22,10 +28,11 @@ border-radius:10px;
 box-shadow:0 0 5px #ccc;
 }
 
-input{
+input,select{
 width:100%;
 padding:10px;
 margin:5px 0;
+box-sizing:border-box;
 }
 
 button{
@@ -34,8 +41,16 @@ background:green;
 color:white;
 border:none;
 width:100%;
+cursor:pointer;
+border-radius:5px;
 }
+
+button:hover{
+opacity:.9;
+}
+
 </style>
+
 </head>
 
 <body>
@@ -44,11 +59,40 @@ width:100%;
 
 <div class="box">
 
-<input id="name" placeholder="اسم الطالب">
-<input id="grade" placeholder="الصف">
-<input id="section" placeholder="الشعبة">
+<input id="studentNumber" placeholder="الرقم المدرسي">
 
-<button onclick="addStudent()">إضافة طالب</button>
+<input id="name" placeholder="اسم الطالب">
+
+<select id="grade">
+<option value="">اختر الصف</option>
+<option>الأول</option>
+<option>الثاني</option>
+<option>الثالث</option>
+<option>الرابع</option>
+<option>الخامس</option>
+<option>السادس</option>
+<option>السابع</option>
+<option>الثامن</option>
+<option>التاسع</option>
+</select>
+
+<select id="section">
+<option value="">اختر الشعبة</option>
+<option>أ</option>
+<option>ب</option>
+</select>
+
+<select id="gender">
+<option value="">اختر الجنس</option>
+<option>ذكر</option>
+<option>أنثى</option>
+</select>
+
+<input id="parentPhone" placeholder="رقم ولي الأمر">
+
+<button onclick="addStudent()">
+➕ إضافة طالب
+</button>
 
 </div>
 
@@ -69,50 +113,93 @@ doc
 
 const col = collection(db,"students");
 
-// ➕ إضافة طالب
+// إضافة طالب
 window.addStudent = async function(){
 
+if(
+!studentNumber.value ||
+!name.value ||
+!grade.value ||
+!section.value
+){
+alert("يرجى إدخال البيانات المطلوبة");
+return;
+}
+
 await addDoc(col,{
+studentNumber: studentNumber.value,
 name: name.value,
 grade: grade.value,
-section: section.value
+section: section.value,
+gender: gender.value,
+parentPhone: parentPhone.value
 });
+
+// تنظيف الحقول
+studentNumber.value="";
+name.value="";
+grade.value="";
+section.value="";
+gender.value="";
+parentPhone.value="";
 
 loadStudents();
 
 }
 
-// 📥 عرض الطلاب
+// عرض الطلاب
 async function loadStudents(){
 
 const data = await getDocs(col);
 
 list.innerHTML = "";
 
-data.forEach(d =>{
+data.forEach(d => {
 
 let s = d.data();
 
 list.innerHTML += `
 <div class="box">
-<b>الاسم:</b> ${s.name}<br>
-<b>الصف:</b> ${s.grade}<br>
-<b>الشعبة:</b> ${s.section}<br><br>
+
+<b>🆔 الرقم المدرسي:</b>
+${s.studentNumber || "-"}<br>
+
+<b>👨‍🎓 الاسم:</b>
+${s.name || "-"}<br>
+
+<b>🏫 الصف:</b>
+${s.grade || "-"}<br>
+
+<b>📚 الشعبة:</b>
+${s.section || "-"}<br>
+
+<b>👤 الجنس:</b>
+${s.gender || "-"}<br>
+
+<b>📞 ولي الأمر:</b>
+${s.parentPhone || "-"}<br><br>
 
 <button onclick="deleteStudent('${d.id}')">
-حذف
+🗑️ حذف
 </button>
 
 </div>
 `;
+
 });
 
 }
 
-// ❌ حذف طالب
+// حذف طالب
 window.deleteStudent = async function(id){
 
-await deleteDoc(doc(db,"students",id));
+if(!confirm("هل تريد حذف الطالب؟")){
+return;
+}
+
+await deleteDoc(
+doc(db,"students",id)
+);
 
 loadStudents();
 
