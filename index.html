@@ -1,187 +1,121 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>نظام قفلة المدرسي</title>
+<title>نظام مدرسة قفلة الذكي</title>
 
 <style>
-
 body{
-font-family:Arial,sans-serif;
-background:#f5f5f5;
 margin:0;
-padding:20px;
+font-family:Arial;
+background:#f5f7fb;
+color:#222;
+}
+
+header{
+background:linear-gradient(135deg,#0b5ed7,#198754);
+color:white;
+padding:60px 20px;
+text-align:center;
+}
+
+header h1{
+font-size:32px;
+margin-bottom:10px;
+}
+
+header p{
+font-size:18px;
+opacity:0.9;
+}
+
+.btn{
+margin-top:20px;
+display:inline-block;
+background:white;
+color:#0b5ed7;
+padding:12px 25px;
+border-radius:8px;
+text-decoration:none;
+font-weight:bold;
 }
 
 .container{
-max-width:900px;
+padding:40px 20px;
+max-width:1000px;
 margin:auto;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:15px;
+}
+
+.card{
 background:white;
 padding:20px;
 border-radius:10px;
-box-shadow:0 0 10px rgba(0,0,0,.1);
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+text-align:center;
 }
 
-h1{
-text-align:center;
+.card h3{
 color:#0b5ed7;
 }
 
-input{
-width:100%;
-padding:10px;
-margin:5px 0;
-box-sizing:border-box;
+footer{
+text-align:center;
+padding:20px;
+margin-top:40px;
+background:#eee;
 }
-
-button{
-width:100%;
-padding:12px;
-background:#0b5ed7;
-color:white;
-border:none;
-cursor:pointer;
-margin-top:10px;
-font-size:16px;
-}
-
-button:hover{
-background:#084298;
-}
-
-.student{
-background:#eef4ff;
-padding:12px;
-margin-top:10px;
-border-radius:6px;
-}
-
-.menu{
-margin-top:20px;
-display:flex;
-gap:10px;
-flex-wrap:wrap;
-}
-
-.menu a{
-background:#198754;
-color:white;
-padding:10px 15px;
-text-decoration:none;
-border-radius:5px;
-}
-
 </style>
 </head>
 
 <body>
 
+<header>
+<h1>🏫 نظام مدرسة قفلة الذكي</h1>
+<p>نظام إدارة الطلاب - الدرجات - الحضور - الشهادات</p>
+
+<a class="btn" href="login.html">🚀 دخول النظام</a>
+</header>
+
 <div class="container">
 
-<h1>🏫 نظام قفلة المدرسي</h1>
+<h2 style="text-align:center">✨ مميزات النظام</h2>
 
-<h3>إضافة طالب</h3>
+<div class="cards">
 
-<input id="name" placeholder="اسم الطالب">
+<div class="card">
+<h3>👨‍🎓 الطلاب</h3>
+<p>إضافة وإدارة بيانات الطلاب بسهولة</p>
+</div>
 
-<input id="studentClass" placeholder="الصف">
+<div class="card">
+<h3>📝 الدرجات</h3>
+<p>تسجيل ومتابعة درجات الطلاب</p>
+</div>
 
-<button onclick="addStudent()">
-إضافة الطالب
-</button>
+<div class="card">
+<h3>📅 الحضور</h3>
+<p>تسجيل الحضور والغياب يوميًا</p>
+</div>
 
-<div class="menu">
-
-<a href="grades.html">الدرجات</a>
-
-<a href="reports.html">التقارير</a>
+<div class="card">
+<h3>🎓 الشهادات</h3>
+<p>إصدار شهادات رسمية للطلاب</p>
+</div>
 
 </div>
 
-<hr>
-
-<h3>قائمة الطلاب</h3>
-
-<div id="students"></div>
-
 </div>
 
-<script type="module">
-
-import {
-db,
-collection,
-addDoc,
-getDocs
-}
-from "./firebase.js";
-
-window.addStudent = async function(){
-
-const name =
-document.getElementById("name").value;
-
-const studentClass =
-document.getElementById("studentClass").value;
-
-if(!name || !studentClass){
-
-alert("أدخل البيانات كاملة");
-
-return;
-
-}
-
-await addDoc(
-collection(db,"students"),
-{
-name:name,
-class:studentClass,
-createdAt:new Date().toISOString()
-}
-);
-
-document.getElementById("name").value="";
-document.getElementById("studentClass").value="";
-
-alert("تمت إضافة الطالب");
-
-loadStudents();
-
-}
-
-async function loadStudents(){
-
-const container =
-document.getElementById("students");
-
-container.innerHTML="";
-
-const snapshot =
-await getDocs(collection(db,"students"));
-
-snapshot.forEach((doc)=>{
-
-const s = doc.data();
-
-container.innerHTML += `
-<div class="student">
-👨‍🎓 ${s.name}
-<br>
-🏫 الصف: ${s.class}
-</div>
-`;
-
-});
-
-}
-
-loadStudents();
-
-</script>
+<footer>
+© 2026 نظام مدرسة قفلة الذكي
+</footer>
 
 </body>
 </html>
