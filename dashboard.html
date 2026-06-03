@@ -1,10 +1,4 @@
-import { auth, onAuthStateChanged } from "./firebase.js";
 
-onAuthStateChanged(auth, (user) => {
-    if (!user) {
-        window.location.href = "login.html";
-    }
-});
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
@@ -160,11 +154,5 @@ loadStats();
 </body>
 </html<a href="certificate.html">
 🎓 الشهادات
-</a>
-import { auth, signOut } from "./firebase.js";
-
-window.logout = function(){
-signOut(auth);
-window.location.href = "login.html";
-}
+</a
 <button onclick="logout()">🚪 تسجيل خروج</button>
