@@ -1,208 +1,111 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>شهادات الطلاب</title>
+<title>الشهادات</title>
 
 <style>
-
 body{
-font-family:Arial,sans-serif;
+font-family:Arial;
 background:#f5f5f5;
 padding:20px;
 }
 
-.form{
+h1{
+text-align:center;
+color:green;
+}
+
+.box{
 background:white;
-padding:20px;
+padding:15px;
+margin:10px 0;
 border-radius:10px;
-max-width:700px;
-margin:auto;
-margin-bottom:20px;
+box-shadow:0 0 10px #ddd;
 }
 
 input{
 width:100%;
 padding:10px;
 margin:5px 0;
-box-sizing:border-box;
 }
 
 button{
 width:100%;
-padding:12px;
-background:#198754;
+padding:10px;
+background:green;
 color:white;
 border:none;
 cursor:pointer;
-margin-top:10px;
 }
 
 .certificate{
 background:white;
-border:10px solid #0b5ed7;
-padding:40px;
-max-width:900px;
-margin:auto;
+padding:20px;
+margin-top:15px;
+border:2px solid green;
+border-radius:10px;
 text-align:center;
-display:none;
 }
-
-.school{
-font-size:28px;
-font-weight:bold;
-color:#0b5ed7;
-}
-
-.student{
-font-size:32px;
-font-weight:bold;
-margin:20px 0;
-}
-
-.grade{
-font-size:24px;
-color:#198754;
-}
-
-@media print{
-
-.form{
-display:none;
-}
-
-button{
-display:none;
-}
-
-body{
-background:white;
-}
-
-}
-
 </style>
-
 </head>
 
 <body>
 
-<div class="form">
+<h1>🎓 إصدار الشهادات</h1>
 
-<h2>🎓 إصدار شهادة</h2>
+<div class="box">
 
-<input
-id="studentName"
-placeholder="اسم الطالب">
+<input id="name" placeholder="اسم الطالب">
+<input id="grade" placeholder="الصف">
 
-<input
-id="studentClass"
-placeholder="الصف">
-
-<input
-id="studentGrade"
-placeholder="التقدير">
-
-<button onclick="generateCertificate()">
-إنشاء الشهادة
-</button>
+<button onclick="generateCert()">إصدار شهادة</button>
 
 </div>
 
-<div
-class="certificate"
-id="certificate">
+<h2>📄 الشهادة</h2>
 
-<div class="school">
-🏫 مدرسة قفلة للتعليم الأساسي
-</div>
+<div id="cert"></div>
 
-<h2>
-شهادة تقدير
-</h2>
+<script type="module">
 
-<p>
-تمنح هذه الشهادة للطالب
-</p>
+import {
+db,
+collection,
+addDoc
+} from "./firebase.js";
 
-<div
-class="student"
-id="certName">
-</div>
+const col = collection(db,"certificates");
 
-<p>
-من الصف
-</p>
 
-<div
-id="certClass">
-</div>
+// 🎓 إصدار شهادة
+window.generateCert = async function(){
 
-<p>
-لحصوله على التقدير
-</p>
+const name = document.getElementById("name").value;
+const grade = document.getElementById("grade").value;
 
-<div
-class="grade"
-id="certGrade">
-</div>
+const id = "CERT-" + Date.now();
 
-<br><br>
+await addDoc(col,{
+name: name,
+grade: grade,
+certId: id,
+date: new Date().toLocaleDateString()
+});
 
-<p>
-العام الدراسي 2026 - 2027م
-</p>
+document.getElementById("cert").innerHTML = `
+<div class="certificate">
 
-<br><br>
+<h2>🏫 مدرسة قفلة</h2>
+<h3>شهادة إتمام</h3>
 
-<button onclick="window.print()">
-🖨️ طباعة الشهادة
-</button>
+<p><b>الطالب:</b> ${name}</p>
+<p><b>الصف:</b> ${grade}</p>
+<p><b>رقم الشهادة:</b> ${id}</p>
+<p><b>التاريخ:</b> ${new Date().toLocaleDateString()}</p>
 
 </div>
-
-<script>
-
-function generateCertificate(){
-
-const name =
-document.getElementById(
-"studentName"
-).value;
-
-const studentClass =
-document.getElementById(
-"studentClass"
-).value;
-
-const grade =
-document.getElementById(
-"studentGrade"
-).value;
-
-document.getElementById(
-"certName"
-).innerText =
-name;
-
-document.getElementById(
-"certClass"
-).innerText =
-studentClass;
-
-document.getElementById(
-"certGrade"
-).innerText =
-grade;
-
-document.getElementById(
-"certificate"
-).style.display =
-"block";
+`;
 
 }
 
