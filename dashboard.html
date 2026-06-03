@@ -161,3 +161,10 @@ loadStats();
 </html<a href="certificate.html">
 🎓 الشهادات
 </a>
+import { auth, signOut } from "./firebase.js";
+
+window.logout = function(){
+signOut(auth);
+window.location.href = "login.html";
+}
+<button onclick="logout()">🚪 تسجيل خروج</button>
