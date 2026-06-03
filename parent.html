@@ -1,47 +1,173 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>بوابة ولي الأمر</title>
 
 <style>
+
 body{
-font-family:Arial,sans-serif;
-background:#f5f5f5;
-padding:20px;
+margin:0;
+font-family:'Tahoma',Arial,sans-serif;
+background:#0f172a;
+color:white;
+}
+
+header{
+background:linear-gradient(135deg,#0b5ed7,#22c55e);
+padding:30px;
 text-align:center;
 }
 
+.box{
+background:#1e293b;
+padding:20px;
+margin:20px auto;
+width:90%;
+max-width:500px;
+border-radius:12px;
+}
+
 input{
+width:100%;
 padding:10px;
-width:300px;
-max-width:100%;
+margin:10px 0;
+border:none;
+border-radius:5px;
 }
 
 button{
-padding:10px 20px;
-margin-top:10px;
-background:#0b5ed7;
+width:100%;
+padding:10px;
+background:green;
 color:white;
 border:none;
+border-radius:5px;
+cursor:pointer;
 }
+
+.result{
+background:#111827;
+padding:15px;
+margin-top:10px;
+border-radius:10px;
+}
+
 </style>
 
 </head>
+
 <body>
 
-<h1>👨‍👩‍👧‍👦 بوابة ولي الأمر</h1>
+<header>
+<h1>👨‍👩‍👧 بوابة ولي الأمر</h1>
+<p>عرض بيانات الطالب باستخدام الرقم المدرسي</p>
+</header>
 
-<p>أدخل الرقم المدرسي للطالب</p>
+<div class="box">
 
-<input type="text" placeholder="الرقم المدرسي">
+<input id="studentNumber" placeholder="أدخل الرقم المدرسي">
 
-<br><br>
-
-<button>
+<button onclick="searchStudent()">
 بحث
 </button>
 
+<div id="result"></div>
+
+</div>
+
+<script type="module">
+
+import {
+db,
+collection,
+getDocs
+} from "./firebase.js";
+
+const studentsCol = collection(db,"students");
+const attendanceCol = collection(db,"attendance");
+const gradesCol = collection(db,"grades");
+
+/* 🔍 البحث عن الطالب */
+window.searchStudent = async function(){
+
+let num = document.getElementById("studentNumber").value;
+
+if(!num){
+alert("أدخل الرقم المدرسي");
+return;
+}
+
+/* جلب الطلاب */
+let students = await getDocs(studentsCol);
+let student = null;
+
+students.forEach(s=>{
+if(s.data().studentNumber == num){
+student = s.data();
+}
+});
+
+if(!student){
+document.getElementById("result").innerHTML =
+"❌ لا يوجد طالب بهذا الرقم";
+return;
+}
+
+/* جلب الحضور */
+let attendance = await getDocs(attendanceCol);
+let present = 0;
+let absent = 0;
+
+attendance.forEach(a=>{
+let data = a.data();
+if(data.studentNumber == num){
+if(data.status == "حاضر") present++;
+if(data.status == "غائب") absent++;
+}
+});
+
+/* جلب الدرجات */
+let grades = await getDocs(gradesCol);
+let total = 0;
+let count = 0;
+
+grades.forEach(g=>{
+let data = g.data();
+if(data.studentNumber == num){
+total += Number(data.grade || 0);
+count++;
+}
+});
+
+let avg = count ? (total / count).toFixed(2) : 0;
+
+/* عرض النتيجة */
+document.getElementById("result").innerHTML = `
+<div class="result">
+
+<h3>👨‍🎓 بيانات الطالب</h3>
+<p>الاسم: ${student.name}</p>
+<p>الصف: ${student.grade}</p>
+<p>الشعبة: ${student.section}</p>
+
+<h3>📅 الحضور</h3>
+<p>حاضر: ${present}</p>
+<p>غائب: ${absent}</p>
+
+<h3>📝 الدرجات</h3>
+<p>المعدل: ${avg}</p>
+
+</div>
+`;
+
+}
+
+</script>
+
 </body>
+
 </html>
