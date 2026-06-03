@@ -1,18 +1,12 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-
-<head>
+<!DOCTYPE html><html lang="ar" dir="rtl"><head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>إدارة الطلاب</title>
-
-<style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>إدارة الطلاب</title><style>
 
 body{
-font-family:Arial,sans-serif;
+font-family:'Tahoma',Arial,sans-serif;
 background:#f5f5f5;
 padding:20px;
+margin:0;
 }
 
 h1{
@@ -25,7 +19,7 @@ background:white;
 padding:15px;
 margin:10px 0;
 border-radius:10px;
-box-shadow:0 0 5px #ccc;
+box-shadow:0 0 8px #ccc;
 }
 
 input,select{
@@ -33,6 +27,9 @@ width:100%;
 padding:10px;
 margin:5px 0;
 box-sizing:border-box;
+border:1px solid #ccc;
+border-radius:5px;
+font-family:'Tahoma',Arial,sans-serif;
 }
 
 button{
@@ -43,27 +40,22 @@ border:none;
 width:100%;
 cursor:pointer;
 border-radius:5px;
+font-size:16px;
 }
 
 button:hover{
 opacity:.9;
 }
 
-</style>
+.student-card{
+background:white;
+padding:15px;
+margin-top:10px;
+border-radius:10px;
+box-shadow:0 0 5px #ccc;
+}
 
-</head>
-
-<body>
-
-<h1>👨‍🎓 إدارة الطلاب</h1>
-
-<div class="box">
-
-<input id="studentNumber" placeholder="الرقم المدرسي">
-
-<input id="name" placeholder="اسم الطالب">
-
-<select id="grade">
+</style></head><body><h1>👨‍🎓 إدارة الطلاب</h1><div class="box"><input id="studentNumber" placeholder="الرقم المدرسي"><input id="name" placeholder="اسم الطالب"><select id="grade">
 <option value="">اختر الصف</option>
 <option>الأول</option>
 <option>الثاني</option>
@@ -74,35 +66,21 @@ opacity:.9;
 <option>السابع</option>
 <option>الثامن</option>
 <option>التاسع</option>
-</select>
-
-<select id="section">
+</select><select id="section">
 <option value="">اختر الشعبة</option>
 <option>أ</option>
 <option>ب</option>
-</select>
-
-<select id="gender">
+</select><select id="gender">
 <option value="">اختر الجنس</option>
 <option>ذكر</option>
 <option>أنثى</option>
-</select>
-
-<input id="parentPhone" placeholder="رقم ولي الأمر">
-
-<button onclick="addStudent()">
+</select><input id="parentPhone" placeholder="رقم ولي الأمر"><button onclick="addStudent()">
 ➕ إضافة طالب
-</button>
-
-</div>
-
-<h2>📋 قائمة الطلاب</h2>
-
-<div id="list"></div>
-
-<script type="module">
+</button></div><h2>📋 قائمة الطلاب</h2><div id="list"></div><script type="module">
 
 import {
+auth,
+onAuthStateChanged,
 db,
 collection,
 addDoc,
@@ -110,6 +88,13 @@ getDocs,
 deleteDoc,
 doc
 } from "./firebase.js";
+
+// حماية الصفحة
+onAuthStateChanged(auth,(user)=>{
+if(!user){
+window.location.href="login.html";
+}
+});
 
 const col = collection(db,"students");
 
@@ -135,13 +120,13 @@ gender: gender.value,
 parentPhone: parentPhone.value
 });
 
-// تنظيف الحقول
-studentNumber.value="";
-name.value="";
-grade.value="";
-section.value="";
-gender.value="";
-parentPhone.value="";
+// تفريغ الحقول
+studentNumber.value = "";
+name.value = "";
+grade.value = "";
+section.value = "";
+gender.value = "";
+parentPhone.value = "";
 
 loadStudents();
 
@@ -159,28 +144,28 @@ data.forEach(d => {
 let s = d.data();
 
 list.innerHTML += `
-<div class="box">
+<div class="student-card">
 
 <b>🆔 الرقم المدرسي:</b>
-${s.studentNumber || "-"}<br>
+${s.studentNumber || "-"}<br><br>
 
-<b>👨‍🎓 الاسم:</b>
-${s.name || "-"}<br>
+<b>👨‍🎓 اسم الطالب:</b>
+${s.name || "-"}<br><br>
 
 <b>🏫 الصف:</b>
-${s.grade || "-"}<br>
+${s.grade || "-"}<br><br>
 
 <b>📚 الشعبة:</b>
-${s.section || "-"}<br>
+${s.section || "-"}<br><br>
 
 <b>👤 الجنس:</b>
-${s.gender || "-"}<br>
+${s.gender || "-"}<br><br>
 
-<b>📞 ولي الأمر:</b>
+<b>📞 رقم ولي الأمر:</b>
 ${s.parentPhone || "-"}<br><br>
 
 <button onclick="deleteStudent('${d.id}')">
-🗑️ حذف
+🗑️ حذف الطالب
 </button>
 
 </div>
@@ -193,7 +178,7 @@ ${s.parentPhone || "-"}<br><br>
 // حذف طالب
 window.deleteStudent = async function(id){
 
-if(!confirm("هل تريد حذف الطالب؟")){
+if(!confirm("هل تريد حذف هذا الطالب؟")){
 return;
 }
 
@@ -207,7 +192,5 @@ loadStudents();
 
 loadStudents();
 
-</script>
-
-</body>
+</script></body>
 </html>
