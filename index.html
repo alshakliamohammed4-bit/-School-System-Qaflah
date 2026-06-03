@@ -9,36 +9,39 @@
 body{
 margin:0;
 font-family:Arial;
-background:#f5f7fb;
-color:#222;
+background:#0f172a;
+color:white;
 }
 
 header{
-background:linear-gradient(135deg,#0b5ed7,#198754);
-color:white;
-padding:60px 20px;
+background:linear-gradient(135deg,#0b5ed7,#22c55e);
+padding:70px 20px;
 text-align:center;
 }
 
 header h1{
-font-size:32px;
+font-size:34px;
 margin-bottom:10px;
 }
 
 header p{
-font-size:18px;
 opacity:0.9;
 }
 
 .btn{
-margin-top:20px;
 display:inline-block;
+margin-top:20px;
 background:white;
 color:#0b5ed7;
-padding:12px 25px;
-border-radius:8px;
+padding:12px 28px;
+border-radius:10px;
 text-decoration:none;
 font-weight:bold;
+transition:0.3s;
+}
+
+.btn:hover{
+transform:scale(1.05);
 }
 
 .container{
@@ -47,29 +50,37 @@ max-width:1000px;
 margin:auto;
 }
 
-.cards{
+.grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
 gap:15px;
+margin-top:20px;
 }
 
 .card{
-background:white;
+background:#1e293b;
 padding:20px;
-border-radius:10px;
-box-shadow:0 0 10px rgba(0,0,0,0.1);
+border-radius:12px;
 text-align:center;
+transition:0.3s;
+border:1px solid #334155;
+}
+
+.card:hover{
+transform:translateY(-5px);
+background:#111827;
 }
 
 .card h3{
-color:#0b5ed7;
+color:#22c55e;
 }
 
 footer{
 text-align:center;
 padding:20px;
 margin-top:40px;
-background:#eee;
+background:#020617;
+opacity:0.8;
 }
 </style>
 </head>
@@ -78,7 +89,7 @@ background:#eee;
 
 <header>
 <h1>🏫 نظام مدرسة قفلة الذكي</h1>
-<p>نظام إدارة الطلاب - الدرجات - الحضور - الشهادات</p>
+<p>نظام إدارة متكامل: الطلاب - الدرجات - الحضور - الشهادات</p>
 
 <a class="btn" href="login.html">🚀 دخول النظام</a>
 </header>
@@ -87,16 +98,16 @@ background:#eee;
 
 <h2 style="text-align:center">✨ مميزات النظام</h2>
 
-<div class="cards">
+<div class="grid">
 
 <div class="card">
-<h3>👨‍🎓 الطلاب</h3>
-<p>إضافة وإدارة بيانات الطلاب بسهولة</p>
+<h3>👨‍🎓 إدارة الطلاب</h3>
+<p>إضافة وتعديل وحذف بيانات الطلاب</p>
 </div>
 
 <div class="card">
 <h3>📝 الدرجات</h3>
-<p>تسجيل ومتابعة درجات الطلاب</p>
+<p>إدارة درجات الطلاب بشكل احترافي</p>
 </div>
 
 <div class="card">
@@ -106,7 +117,7 @@ background:#eee;
 
 <div class="card">
 <h3>🎓 الشهادات</h3>
-<p>إصدار شهادات رسمية للطلاب</p>
+<p>إصدار شهادات رسمية مع رقم خاص</p>
 </div>
 
 </div>
@@ -114,7 +125,7 @@ background:#eee;
 </div>
 
 <footer>
-© 2026 نظام مدرسة قفلة الذكي
+© 2026 نظام مدرسة قفلة الذكي - جميع الحقوق محفوظة
 </footer>
 
 </body>
