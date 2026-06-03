@@ -1,70 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>Login</title>
-  <style>
-    body {
-      font-family: Arial;
-      background: linear-gradient(135deg, #1b5e20, #43a047);
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-    }
+<meta charset="UTF-8">
+<title>تسجيل الدخول</title>
 
-    .box {
-      background: white;
-      padding: 25px;
-      border-radius: 12px;
-      width: 300px;
-      color: black;
-    }
-
-    input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-    }
-
-    button {
-      width: 100%;
-      padding: 10px;
-      background: green;
-      color: white;
-      border: none;
-    }
-  </style>
+<style>
+body{font-family:Arial;background:#f5f5f5;padding:20px;text-align:center}
+.box{background:white;padding:20px;border-radius:10px;max-width:300px;margin:auto}
+input{width:100%;padding:10px;margin:5px 0}
+button{width:100%;padding:10px;background:green;color:white;border:none}
+</style>
 </head>
+
 <body>
 
+<h1>🔐 تسجيل الدخول</h1>
+
 <div class="box">
-  <h2>School Login</h2>
 
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
+<input id="email" placeholder="البريد الإلكتروني">
+<input id="password" type="password" placeholder="كلمة المرور">
 
-  <button onclick="login()">Login</button>
+<button onclick="login()">دخول</button>
 
-  <p id="msg"></p>
 </div>
 
 <script type="module">
-import { auth } from './firebase.js';
-import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-window.login = async function () {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+import { auth, signInWithEmailAndPassword } from "./firebase.js";
 
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-    window.location.href = "dashboard.html";
-  } catch (e) {
-    document.getElementById("msg").innerText = "خطأ في تسجيل الدخول";
-  }
+window.login = async function(){
+
+const email = document.getElementById("email").value;
+const password = document.getElementById("password").value;
+
+try{
+await signInWithEmailAndPassword(auth, email, password);
+window.location.href = "dashboard.html";
 }
+catch(error){
+alert("خطأ في تسجيل الدخول ❌");
+}
+
+}
+
 </script>
 
 </body>
