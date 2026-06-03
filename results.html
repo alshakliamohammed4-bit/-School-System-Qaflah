@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>النتائج النهائية</title>
+
+<style>
+body{
+font-family:Arial,sans-serif;
+background:#f5f5f5;
+padding:20px;
+}
+
+h1{
+text-align:center;
+color:#0b5ed7;
+}
+
+.box{
+background:white;
+padding:15px;
+margin:10px 0;
+border-radius:10px;
+box-shadow:0 0 10px #ddd;
+}
+
+input{
+width:100%;
+padding:10px;
+margin:5px 0;
+}
+
+button{
+width:100%;
+padding:10px;
+background:#198754;
+color:white;
+border:none;
+}
+</style>
+</head>
+
+<body>
+
+<h1>📊 النتائج النهائية التلقائية</h1>
+
+<div class="box">
+
+<input id="studentId" placeholder="رقم الطالب">
+
+<button onclick="getResult()">عرض النتيجة</button>
+
+</div>
+
+<div id="result"></div>
+
+<script type="module">
+
+import {
+db,
+collection,
+getDocs
+} from "./firebase.js";
+
+// حساب المتوسط
+function calculate(grades){
+let sum = 0;
+let count = 0;
+
+grades.forEach(g=>{
+sum += Number(g.grade || 0);
+count++;
+});
+
+return count ? (sum / count).toFixed(2) : 0;
+}
+
+// التقدير
+function getGrade(avg){
+if(avg >= 90) return "ممتاز";
+if(avg >= 80) return "جيد جدًا";
+if(avg >= 70) return "جيد";
+if(avg >= 60) return "مقبول";
+return "ضعيف";
+}
+
+// عرض النتيجة
+window.getResult = async function(){
+
+let id = studentId.value;
+
+if(!id){
+alert("أدخل رقم الطالب");
+return;
+}
+
+// الطلاب
+let students = await getDocs(collection(db,"students"));
+let student = null;
+
+students.forEach(s=>{
+if(s.id === id){
+student = s.data();
+}
+});
+
+if(!student){
+result.innerHTML = "<b>❌ الطالب غير موجود</b>";
+return;
+}
+
+// الدرجات
+let gradesSnap = await getDocs(collection(db,"grades"));
+
+let studentGrades = [];
+
+gradesSnap.forEach(g=>{
+let data = g.data();
+if(data.studentId === id){
+studentGrades.push(data);
+}
+});
+
+let avg = calculate(studentGrades);
+let gradeText = getGrade(avg);
+
+// عرض النتيجة
+result.innerHTML = `
+<div class="box">
+<h3>👨‍🎓 ${student.name || "طالب"}</h3>
+<p>📚 الصف: ${student.class || "-"}</p>
+<p>📊 المعدل: ${avg}</p>
+<p>🎯 التقدير: ${gradeText}</p>
+</div>
+`;
+}
+
+</script>
+
+</body>
+</html>
