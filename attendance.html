@@ -1,77 +1,66 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>الحضور والغياب</title>
 
 <style>
-
 body{
-font-family:Arial,sans-serif;
+font-family:Arial;
 background:#f5f5f5;
 padding:20px;
 }
 
-.container{
-max-width:900px;
-margin:auto;
-background:white;
-padding:20px;
-border-radius:10px;
-box-shadow:0 0 10px rgba(0,0,0,.1);
-}
-
 h1{
 text-align:center;
-color:#0b5ed7;
+color:green;
 }
 
-.student{
-display:flex;
-justify-content:space-between;
-align-items:center;
+.box{
+background:white;
+padding:15px;
+margin:10px 0;
+border-radius:10px;
+box-shadow:0 0 10px #ddd;
+}
+
+input,select{
+width:100%;
 padding:10px;
-margin:8px 0;
-background:#eef4ff;
-border-radius:6px;
+margin:5px 0;
 }
 
 button{
-padding:8px 12px;
+width:100%;
+padding:10px;
+background:green;
+color:white;
 border:none;
 cursor:pointer;
-color:white;
-border-radius:5px;
 }
-
-.present{
-background:#198754;
-}
-
-.absent{
-background:#dc3545;
-}
-
 </style>
 </head>
 
 <body>
 
-<div class="container">
-
 <h1>📅 الحضور والغياب</h1>
 
-<p>
-التاريخ:
-<span id="today"></span>
-</p>
+<div class="box">
 
-<div id="students"></div>
+<input id="name" placeholder="اسم الطالب">
+
+<select id="status">
+<option value="حاضر">حاضر</option>
+<option value="غائب">غائب</option>
+</select>
+
+<button onclick="addAttendance()">تسجيل</button>
 
 </div>
+
+<h2>📋 السجل</h2>
+
+<div id="list"></div>
 
 <script type="module">
 
@@ -79,92 +68,72 @@ import {
 db,
 collection,
 addDoc,
-getDocs
+getDocs,
+deleteDoc,
+doc
+} from "./firebase.js";
+
+const col = collection(db,"attendance");
+
+
+// ➕ إضافة حضور
+window.addAttendance = async function(){
+
+const name = document.getElementById("name").value;
+const status = document.getElementById("status").value;
+
+const date = new Date().toLocaleDateString();
+
+await addDoc(col,{
+name: name,
+status: status,
+date: date
+});
+
+document.getElementById("name").value = "";
+
+loadAttendance();
 }
-from "./firebase.js";
 
-document.getElementById("today").innerText =
-new Date().toLocaleDateString("ar");
 
-async function loadStudents(){
+// 📋 عرض الحضور
+async function loadAttendance(){
 
-const container =
-document.getElementById("students");
+const data = await getDocs(col);
 
-container.innerHTML="";
+const list = document.getElementById("list");
+list.innerHTML = "";
 
-const snapshot =
-await getDocs(collection(db,"students"));
+data.forEach(d=>{
 
-snapshot.forEach((doc)=>{
+let a = d.data();
 
-const s = doc.data();
+list.innerHTML += `
+<div class="box">
+<b>الطالب:</b> ${a.name}<br>
+<b>الحالة:</b> ${a.status}<br>
+<b>التاريخ:</b> ${a.date}<br><br>
 
-container.innerHTML += `
-<div class="student">
-
-<div>
-👨‍🎓 ${s.name}
-<br>
-🏫 ${s.class}
-</div>
-
-<div>
-
-<button
-class="present"
-onclick="saveAttendance(
-'${doc.id}',
-'${s.name}',
-'حاضر'
-)">
-حاضر
+<button onclick="deleteAttendance('${d.id}')">
+حذف
 </button>
-
-<button
-class="absent"
-onclick="saveAttendance(
-'${doc.id}',
-'${s.name}',
-'غائب'
-)">
-غائب
-</button>
-
-</div>
-
 </div>
 `;
-
 });
 
 }
 
-window.saveAttendance = async function(
-studentId,
-studentName,
-status
-){
 
-await addDoc(
-collection(db,"attendance"),
-{
-studentId,
-studentName,
-status,
-date:new Date().toISOString()
-}
-);
+// ❌ حذف سجل
+window.deleteAttendance = async function(id){
 
-alert(
-studentName +
-" : " +
-status
-);
+await deleteDoc(doc(db,"attendance",id));
+
+loadAttendance();
 
 }
 
-loadStudents();
+loadAttendance();
 
 </script>
 
