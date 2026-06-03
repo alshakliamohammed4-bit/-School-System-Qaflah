@@ -24,7 +24,7 @@ border-radius:10px;
 box-shadow:0 0 10px #ddd;
 }
 
-input{
+input,select{
 width:100%;
 padding:10px;
 margin:5px 0;
@@ -41,11 +41,42 @@ cursor:pointer;
 
 .certificate{
 background:white;
-padding:20px;
-margin-top:15px;
-border:2px solid green;
-border-radius:10px;
+padding:25px;
+margin-top:20px;
+border:3px solid green;
+border-radius:15px;
 text-align:center;
+position:relative;
+}
+
+.logo{
+width:80px;
+height:80px;
+margin:auto;
+display:block;
+}
+
+.title{
+font-size:22px;
+font-weight:bold;
+color:green;
+margin-top:10px;
+}
+
+.signature{
+margin-top:40px;
+display:flex;
+justify-content:space-between;
+}
+
+.sign-box{
+text-align:center;
+width:45%;
+}
+
+.line{
+border-top:1px solid #000;
+margin-top:30px;
 }
 </style>
 </head>
@@ -56,14 +87,21 @@ text-align:center;
 
 <div class="box">
 
+<!-- شعار المدرسة -->
+<img src="https://i.imgur.com/1Q9Z1ZC.png" class="logo">
+
 <input id="name" placeholder="اسم الطالب">
+
+<select id="gender">
+<option value="طالب">طالب</option>
+<option value="طالبة">طالبة</option>
+</select>
+
 <input id="grade" placeholder="الصف">
 
 <button onclick="generateCert()">إصدار شهادة</button>
 
 </div>
-
-<h2>📄 الشهادة</h2>
 
 <div id="cert"></div>
 
@@ -77,32 +115,55 @@ addDoc
 
 const col = collection(db,"certificates");
 
-
-// 🎓 إصدار شهادة
 window.generateCert = async function(){
 
 const name = document.getElementById("name").value;
 const grade = document.getElementById("grade").value;
+const gender = document.getElementById("gender").value;
 
-const id = "CERT-" + Date.now();
+const certId = "CERT-" + Date.now();
 
 await addDoc(col,{
-name: name,
-grade: grade,
-certId: id,
+name,
+grade,
+gender,
+certId,
 date: new Date().toLocaleDateString()
 });
 
 document.getElementById("cert").innerHTML = `
 <div class="certificate">
 
-<h2>🏫 مدرسة قفلة</h2>
-<h3>شهادة إتمام</h3>
+<img src="https://i.imgur.com/1Q9Z1ZC.png" class="logo">
 
-<p><b>الطالب:</b> ${name}</p>
-<p><b>الصف:</b> ${grade}</p>
-<p><b>رقم الشهادة:</b> ${id}</p>
-<p><b>التاريخ:</b> ${new Date().toLocaleDateString()}</p>
+<div class="title">🏫 مدرسة قفلة للتعليم الأساسي</div>
+
+<h2>شهادة إتمام الدراسة</h2>
+
+<p>تشهد إدارة المدرسة بأن</p>
+
+<h3>${gender} / ${name}</h3>
+
+<p>قد اجتاز/اجتازت الصف <b>${grade}</b> بنجاح</p>
+
+<p>رقم الشهادة: <b>${certId}</b></p>
+
+<p>التاريخ: ${new Date().toLocaleDateString()}</p>
+
+<div class="signature">
+
+<div class="sign-box">
+<div class="line"></div>
+<p>مدير المدرسة</p>
+<p>أ. محمد مهدي حسين الشكلية</p>
+</div>
+
+<div class="sign-box">
+<div class="line"></div>
+<p>ختم المدرسة</p>
+</div>
+
+</div>
 
 </div>
 `;
