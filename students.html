@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>الطلاب</title>
+<style>
+body{font-family:Arial;background:#f5f5f5;padding:20px}
+h1{text-align:center;color:green}
+
+.box{
+background:white;
+padding:15px;
+margin:10px 0;
+border-radius:10px;
+box-shadow:0 0 5px #ccc;
+}
+
+input{
+width:100%;
+padding:10px;
+margin:5px 0;
+}
+
+button{
+padding:10px;
+background:green;
+color:white;
+border:none;
+width:100%;
+}
+</style>
+</head>
+
+<body>
+
+<h1>👨‍🎓 إدارة الطلاب</h1>
+
+<div class="box">
+
+<input id="name" placeholder="اسم الطالب">
+<input id="grade" placeholder="الصف">
+<input id="section" placeholder="الشعبة">
+
+<button onclick="addStudent()">إضافة طالب</button>
+
+</div>
+
+<h2>📋 قائمة الطلاب</h2>
+
+<div id="list"></div>
+
+<script type="module">
+
+import {
+db,
+collection,
+addDoc,
+getDocs,
+deleteDoc,
+doc
+} from "./firebase.js";
+
+const col = collection(db,"students");
+
+// ➕ إضافة طالب
+window.addStudent = async function(){
+
+await addDoc(col,{
+name: name.value,
+grade: grade.value,
+section: section.value
+});
+
+loadStudents();
+
+}
+
+// 📥 عرض الطلاب
+async function loadStudents(){
+
+const data = await getDocs(col);
+
+list.innerHTML = "";
+
+data.forEach(d =>{
+
+let s = d.data();
+
+list.innerHTML += `
+<div class="box">
+<b>الاسم:</b> ${s.name}<br>
+<b>الصف:</b> ${s.grade}<br>
+<b>الشعبة:</b> ${s.section}<br><br>
+
+<button onclick="deleteStudent('${d.id}')">
+حذف
+</button>
+
+</div>
+`;
+});
+
+}
+
+// ❌ حذف طالب
+window.deleteStudent = async function(id){
+
+await deleteDoc(doc(db,"students",id));
+
+loadStudents();
+
+}
+
+loadStudents();
+
+</script>
+
+</body>
+</html>
