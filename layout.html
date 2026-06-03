@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>نظام مدرسة قفلة</title>
+
+<style>
+
+body{
+margin:0;
+font-family:'Tahoma',Arial;
+display:flex;
+background:#f1f5f9;
+}
+
+/* الشريط الجانبي */
+.sidebar{
+width:240px;
+background:#0f172a;
+color:white;
+height:100vh;
+position:fixed;
+right:0;
+top:0;
+padding:15px;
+}
+
+.sidebar img{
+width:80px;
+display:block;
+margin:auto;
+}
+
+.sidebar h2{
+text-align:center;
+font-size:16px;
+margin:10px 0;
+}
+
+.menu a{
+display:block;
+color:white;
+text-decoration:none;
+padding:10px;
+margin:5px 0;
+border-radius:8px;
+background:#1e293b;
+}
+
+.menu a:hover{
+background:#22c55e;
+}
+
+/* المحتوى */
+.content{
+margin-right:260px;
+padding:20px;
+width:100%;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 0 10px #ddd;
+margin-bottom:15px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+
+<img src="assets/logo.png">
+
+<h2>🏫 مدرسة قفلة</h2>
+
+<div class="menu">
+
+<a href="dashboard.html">🏠 لوحة التحكم</a>
+<a href="students.html">👨‍🎓 الطلاب</a>
+<a href="grades.html">📝 الدرجات</a>
+<a href="attendance.html">📅 الحضور</a>
+<a href="certificate.html">🎓 الشهادات</a>
+<a href="parent.html">👨‍👩‍👧 ولي الأمر</a>
+
+</div>
+
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+<div class="card">
+<h2>مرحبًا بك في النظام</h2>
+<p>نظام إدارة مدرسة قفلة الذكي</p>
+</div>
+
+</div>
+
+</body>
+</html>
