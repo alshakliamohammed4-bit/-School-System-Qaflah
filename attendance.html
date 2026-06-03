@@ -1,22 +1,12 @@
-
-import { auth, onAuthStateChanged } from "./firebase.js";
-
-onAuthStateChanged(auth, (user) => {
-    if (!user) {
-        window.location.href = "login.html";
-    }
-});
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
+<!DOCTYPE html><html lang="ar" dir="rtl"><head>
 <meta charset="UTF-8">
-<title>الحضور والغياب</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>الحضور والغياب</title><style>
 
-<style>
 body{
-font-family:Arial;
+font-family:'Tahoma',Arial,sans-serif;
 background:#f5f5f5;
 padding:20px;
+margin:0;
 }
 
 h1{
@@ -36,6 +26,7 @@ input,select{
 width:100%;
 padding:10px;
 margin:5px 0;
+box-sizing:border-box;
 }
 
 button{
@@ -45,34 +36,23 @@ background:green;
 color:white;
 border:none;
 cursor:pointer;
+border-radius:5px;
 }
-</style>
-</head>
 
-<body>
+button:hover{
+opacity:.9;
+}
 
-<h1>📅 الحضور والغياب</h1>
-
-<div class="box">
-
-<input id="name" placeholder="اسم الطالب">
-
-<select id="status">
+</style></head><body><h1>📅 الحضور والغياب</h1><div class="box"><input id="studentNumber" placeholder="الرقم المدرسي"><select id="status">
 <option value="حاضر">حاضر</option>
 <option value="غائب">غائب</option>
-</select>
-
-<button onclick="addAttendance()">تسجيل</button>
-
-</div>
-
-<h2>📋 السجل</h2>
-
-<div id="list"></div>
-
-<script type="module">
+</select><button onclick="addAttendance()">
+تسجيل الحضور
+</button></div><h2>📋 سجل الحضور</h2><div id="list"></div><script type="module">
 
 import {
+auth,
+onAuthStateChanged,
 db,
 collection,
 addDoc,
@@ -81,35 +61,64 @@ deleteDoc,
 doc
 } from "./firebase.js";
 
-const col = collection(db,"attendance");
+/* حماية الصفحة */
+onAuthStateChanged(auth,(user)=>{
+if(!user){
+window.location.href="login.html";
+}
+});
 
+const attendanceCol = collection(db,"attendance");
+const studentsCol = collection(db,"students");
 
-// ➕ إضافة حضور
+/* إضافة حضور */
 window.addAttendance = async function(){
 
-const name = document.getElementById("name").value;
-const status = document.getElementById("status").value;
+let studentNumber =
+document.getElementById("studentNumber").value;
 
-const date = new Date().toLocaleDateString();
+let status =
+document.getElementById("status").value;
 
-await addDoc(col,{
-name: name,
+if(!studentNumber){
+alert("أدخل الرقم المدرسي");
+return;
+}
+
+/* البحث عن اسم الطالب */
+let studentsSnap = await getDocs(studentsCol);
+
+let studentName = "غير معروف";
+
+studentsSnap.forEach(s=>{
+let data = s.data();
+if(data.studentNumber == studentNumber){
+studentName = data.name;
+}
+});
+
+let date = new Date().toLocaleDateString();
+
+await addDoc(attendanceCol,{
+studentNumber: studentNumber,
+studentName: studentName,
 status: status,
 date: date
 });
 
-document.getElementById("name").value = "";
+document.getElementById("studentNumber").value = "";
 
 loadAttendance();
+
 }
 
-
-// 📋 عرض الحضور
+/* عرض الحضور */
 async function loadAttendance(){
 
-const data = await getDocs(col);
+const data = await getDocs(attendanceCol);
 
 const list = document.getElementById("list");
+
 list.innerHTML = "";
 
 data.forEach(d=>{
@@ -118,22 +127,26 @@ let a = d.data();
 
 list.innerHTML += `
 <div class="box">
-<b>الطالب:</b> ${a.name}<br>
-<b>الحالة:</b> ${a.status}<br>
-<b>التاريخ:</b> ${a.date}<br><br>
+
+<b>🆔 الرقم:</b> ${a.studentNumber}<br>
+<b>👨‍🎓 الاسم:</b> ${a.studentName}<br>
+<b>📅 التاريخ:</b> ${a.date}<br>
+<b>📌 الحالة:</b> ${a.status}<br><br>
 
 <button onclick="deleteAttendance('${d.id}')">
-حذف
+🗑️ حذف
 </button>
+
 </div>
 `;
 });
 
 }
 
-
-// ❌ حذف سجل
+/* حذف */
 window.deleteAttendance = async function(id){
+
+if(!confirm("هل تريد حذف السجل؟")) return;
 
 await deleteDoc(doc(db,"attendance",id));
 
@@ -143,7 +156,5 @@ loadAttendance();
 
 loadAttendance();
 
-</script>
-
-</body>
+</script></body>
 </html>
