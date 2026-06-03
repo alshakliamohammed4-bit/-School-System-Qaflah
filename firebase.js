@@ -1,5 +1,3 @@
-// firebase.js
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
@@ -13,9 +11,7 @@ doc
 
 import {
 getAuth,
-signInWithEmailAndPassword,
-createUserWithEmailAndPassword,
-signOut
+signInWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
@@ -24,8 +20,7 @@ const firebaseConfig = {
   projectId: "school-system-qaflah",
   storageBucket: "school-system-qaflah.firebasestorage.app",
   messagingSenderId: "469860732094",
-  appId: "1:469860732094:web:21869dd6e6d018c1cbe2ef",
-  measurementId: "G-P0RVPRJ454"
+  appId: "1:469860732094:web:21869dd6e6d018c1cbe2ef"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -41,7 +36,5 @@ addDoc,
 getDocs,
 deleteDoc,
 doc,
-signInWithEmailAndPassword,
-createUserWithEmailAndPassword,
-signOut
+signInWithEmailAndPassword
 };
