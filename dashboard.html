@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>لوحة التحكم - مدرسة قفلة</title>
+<title>لوحة التحكم</title>
 
 <style>
 
@@ -18,17 +18,8 @@ color:white;
 
 header{
 background:linear-gradient(135deg,#0b5ed7,#22c55e);
-padding:60px 20px;
+padding:50px 20px;
 text-align:center;
-}
-
-header h1{
-margin:0;
-font-size:28px;
-}
-
-header p{
-opacity:0.9;
 }
 
 .container{
@@ -49,11 +40,9 @@ background:#1e293b;
 padding:20px;
 border-radius:12px;
 text-align:center;
-transition:0.3s;
-border:1px solid #334155;
-cursor:pointer;
 text-decoration:none;
 color:white;
+transition:0.3s;
 }
 
 .card:hover{
@@ -61,16 +50,25 @@ transform:translateY(-5px);
 background:#111827;
 }
 
-.card h3{
-color:#22c55e;
-margin-bottom:10px;
+button{
+padding:10px;
+border:none;
+border-radius:5px;
+cursor:pointer;
 }
 
-footer{
-text-align:center;
-padding:15px;
-margin-top:30px;
-opacity:0.7;
+.logout{
+background:red;
+color:white;
+margin-top:10px;
+}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:10px 20px;
+background:#111827;
 }
 
 </style>
@@ -79,53 +77,56 @@ opacity:0.7;
 
 <body>
 
+<div class="topbar">
+<h3>🏫 نظام مدرسة قفلة</h3>
+
+<button class="logout" onclick="logout()">
+تسجيل خروج
+</button>
+</div>
+
 <header>
-<h1>🏫 لوحة تحكم مدرسة قفلة</h1>
-<p>نظام إدارة الطلاب - الدرجات - الحضور - الشهادات</p>
+<h1>لوحة التحكم</h1>
+<p>إدارة الطلاب - الدرجات - الحضور - الشهادات</p>
 </header>
 
 <div class="container">
 
 <div class="grid">
 
-<a class="card" href="students.html">
-<h3>👨‍🎓 الطلاب</h3>
-<p>إضافة وتعديل وحذف الطلاب</p>
-</a>
-
-<a class="card" href="grades.html">
-<h3>📝 الدرجات</h3>
-<p>إدارة درجات الطلاب</p>
-</a>
-
-<a class="card" href="attendance.html">
-<h3>📅 الحضور</h3>
-<p>تسجيل الحضور والغياب</p>
-</a>
-
-<a class="card" href="certificate.html">
-<h3>🎓 الشهادات</h3>
-<p>إصدار شهادات الطلاب</p>
-</a>
-
-<a class="card" href="results.html">
-<h3>📊 النتائج</h3>
-<p>عرض النتائج النهائية</p>
-</a>
-
-<a class="card" href="about.html">
-<h3>ℹ️ عن النظام</h3>
-<p>معلومات المطور والمدرسة</p>
-</a>
+<a class="card" href="students.html">👨‍🎓 الطلاب</a>
+<a class="card" href="grades.html">📝 الدرجات</a>
+<a class="card" href="attendance.html">📅 الحضور</a>
+<a class="card" href="certificate.html">🎓 الشهادات</a>
+<a class="card" href="results.html">📊 النتائج</a>
+<a class="card" href="about.html">ℹ️ عن النظام</a>
 
 </div>
 
 </div>
 
-<footer>
-© 2026 نظام مدرسة قفلة الذكي - تصميم وبرمجة أبو حسام
-</footer>
+<script type="module">
+
+import {
+auth,
+onAuthStateChanged,
+signOut
+} from "./firebase.js";
+
+/* 🔐 حماية الصفحة */
+onAuthStateChanged(auth,(user)=>{
+if(!user){
+window.location.href="login.html";
+}
+});
+
+/* 🚪 تسجيل خروج */
+window.logout = async function(){
+await signOut(auth);
+window.location.href="login.html";
+}
+
+</script>
 
 </body>
-
 </html>
