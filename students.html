@@ -1,9 +1,190 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إدارة الطلاب - نظام قفلة</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',Tahoma,sans-serif;
+}
+
+body{
+background:#0f172a;
+color:white;
+padding:20px;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+.back-btn{
+background:#2563eb;
+color:white;
+padding:12px 18px;
+text-decoration:none;
+border-radius:10px;
+font-weight:bold;
+}
+
+.page-title{
+font-size:32px;
+font-weight:bold;
+color:#22c55e;
+}
+
+.box{
+background:#1e293b;
+padding:20px;
+border-radius:15px;
+margin-bottom:20px;
+}
+
+input,select{
+width:100%;
+padding:10px;
+margin:8px 0;
+border:none;
+border-radius:8px;
+background:#334155;
+color:white;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#22c55e;
+border:none;
+border-radius:10px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.student-card{
+background:#1e293b;
+padding:15px;
+margin-top:10px;
+border-radius:10px;
+border-right:4px solid #22c55e;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="topbar">
+<a href="dashboard.html" class="back-btn">⬅ العودة</a>
+<div class="page-title">👨‍🎓 إدارة الطلاب</div>
+</div>
+
+<div class="box">
+<h3>➕ إضافة طالب</h3>
+
+<input id="studentNumber" placeholder="الرقم المدرسي">
+<input id="name" placeholder="اسم الطالب">
+
+<select id="grade">
+<option value="">اختر الصف</option>
+<option>الأول</option>
+<option>الثاني</option>
+<option>الثالث</option>
+<option>الرابع</option>
+<option>الخامس</option>
+<option>السادس</option>
+<option>السابع</option>
+<option>الثامن</option>
+<option>التاسع</option>
+</select>
+
+<select id="section">
+<option value="">الشعبة</option>
+<option>أ</option>
+<option>ب</option>
+</select>
+
+<select id="gender">
+<option value="">الجنس</option>
+<option>ذكر</option>
+<option>أنثى</option>
+</select>
+
+<input id="parentPhone" placeholder="رقم ولي الأمر">
+
+<button onclick="addStudent()">➕ إضافة الطالب</button>
+</div>
+
+<h3>📋 قائمة الطلاب</h3>
+<div id="studentsCount">0</div>
+<div id="list"></div>
+
+</div>
+
+<script type="module">
+
+import { db, collection, addDoc, getDocs, deleteDoc, doc } from "./firebase.js";
+
+/* 🔴 إضافة طالب */
+window.addStudent = async function () {
+
+const studentNumber = document.getElementById("studentNumber");
+const name = document.getElementById("name");
+const grade = document.getElementById("grade");
+const section = document.getElementById("section");
+const gender = document.getElementById("gender");
+const parentPhone = document.getElementById("parentPhone");
+
+if (!studentNumber.value || !name.value || !grade.value || !section.value) {
+alert("يرجى إدخال البيانات المطلوبة");
+return;
+}
+
+try {
+
+await addDoc(collection(db, "students"), {
+studentNumber: studentNumber.value,
+name: name.value,
+grade: grade.value,
+section: section.value,
+gender: gender.value,
+parentPhone: parentPhone.value
+});
+
+loadStudents();
+
+studentNumber.value = "";
+name.value = "";
+grade.value = "";
+section.value = "";
+gender.value = "";
+parentPhone.value = "";
+
+} catch (error) {
+console.error(error);
+alert("حدث خطأ أثناء الإضافة");
+}
+
+}
+
+/* 🔴 تحميل الطلاب */
 window.loadStudents = async function () {
 
 const list = document.getElementById("list");
 list.innerHTML = "";
-
-try {
 
 const snapshot = await getDocs(collection(db, "students"));
 
@@ -11,48 +192,43 @@ let count = 0;
 
 snapshot.forEach((docSnap) => {
 count++;
-
 const s = docSnap.data();
 
 list.innerHTML += `
 <div class="student-card">
 
-<b>🆔 الرقم المدرسي:</b> ${s.studentNumber || "-"}
+<b>🆔:</b> ${s.studentNumber || "-"} <br>
+<b>👨‍🎓:</b> ${s.name || "-"} <br>
+<b>🏫:</b> ${s.grade || "-"} - ${s.section || "-"} <br>
+<b>👤:</b> ${s.gender || "-"} <br>
+<b>📞:</b> ${s.parentPhone || "-"}
 
 <br><br>
 
-<b>👨‍🎓 اسم الطالب:</b> ${s.name || "-"}
-
-<br><br>
-
-<b>🏫 الصف:</b> ${s.grade || "-"}
-
-<br><br>
-
-<b>📚 الشعبة:</b> ${s.section || "-"}
-
-<br><br>
-
-<b>👤 الجنس:</b> ${s.gender || "-"}
-
-<br><br>
-
-<b>📞 ولي الأمر:</b> ${s.parentPhone || "-"}
-
-<br><br>
-
-<button class="delete-btn" onclick="deleteStudent('${docSnap.id}')">
-🗑️ حذف الطالب
+<button onclick="deleteStudent('${docSnap.id}')" style="background:red;color:white;padding:8px;border:none;border-radius:5px;">
+حذف
 </button>
 
 </div>
 `;
 });
 
-document.getElementById("studentsCount").textContent = count;
+document.getElementById("studentsCount").innerText = count;
 
-} catch (error) {
-console.error("LOAD ERROR:", error);
 }
 
-};
+/* 🔴 حذف طالب */
+window.deleteStudent = async function (id) {
+
+await deleteDoc(doc(db, "students", id));
+loadStudents();
+
+}
+
+/* 🔴 تشغيل تلقائي */
+loadStudents();
+
+</script>
+
+</body>
+</html>
