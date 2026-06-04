@@ -1,61 +1,168 @@
-<!DOCTYPE html><html lang="ar" dir="rtl"><head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>إدارة الطلاب</title><style>
+<!DOCTYPE html>
 
-body{
-font-family:'Tahoma',Arial,sans-serif;
-background:#f5f5f5;
-padding:20px;
+<html lang="ar" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>إدارة الطلاب - نظام قفلة</title>
+
+<style>
+
+*{
 margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',Tahoma,sans-serif;
 }
 
-h1{
+body{
+background:#0f172a;
+color:white;
+padding:20px;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+.back-btn{
+background:#2563eb;
+color:white;
+padding:12px 18px;
+text-decoration:none;
+border-radius:10px;
+font-weight:bold;
+}
+
+.page-title{
+font-size:32px;
+font-weight:bold;
+color:#22c55e;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:15px;
+margin-bottom:20px;
+}
+
+.stat-card{
+background:#1e293b;
+padding:20px;
+border-radius:15px;
 text-align:center;
-color:green;
+}
+
+.stat-card h2{
+font-size:35px;
+color:#22c55e;
 }
 
 .box{
-background:white;
-padding:15px;
-margin:10px 0;
-border-radius:10px;
-box-shadow:0 0 8px #ccc;
+background:#1e293b;
+padding:25px;
+border-radius:15px;
+margin-bottom:20px;
+}
+
+.box h2{
+margin-bottom:15px;
+color:#22c55e;
 }
 
 input,select{
 width:100%;
-padding:10px;
-margin:5px 0;
-box-sizing:border-box;
-border:1px solid #ccc;
-border-radius:5px;
-font-family:'Tahoma',Arial,sans-serif;
+padding:12px;
+margin:8px 0;
+border:none;
+border-radius:10px;
+background:#334155;
+color:white;
 }
 
 button{
-padding:10px;
-background:green;
-color:white;
+padding:12px;
+background:#22c55e;
+color:black;
 border:none;
 width:100%;
 cursor:pointer;
-border-radius:5px;
+border-radius:10px;
 font-size:16px;
+font-weight:bold;
 }
 
-button:hover{
-opacity:.9;
+.search-box{
+margin-bottom:20px;
 }
 
 .student-card{
-background:white;
-padding:15px;
-margin-top:10px;
-border-radius:10px;
-box-shadow:0 0 5px #ccc;
+background:#1e293b;
+padding:20px;
+margin-top:15px;
+border-radius:15px;
+border-right:5px solid #22c55e;
 }
 
-</style></head><body><h1>👨‍🎓 إدارة الطلاب</h1><div class="box"><input id="studentNumber" placeholder="الرقم المدرسي"><input id="name" placeholder="اسم الطالب"><select id="grade">
+.student-card b{
+color:#22c55e;
+}
+
+.delete-btn{
+margin-top:10px;
+background:#ef4444;
+color:white;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="topbar">
+
+<a href="dashboard.html" class="back-btn">
+⬅ العودة
+</a>
+
+<div class="page-title">
+👨‍🎓 إدارة الطلاب
+</div>
+
+</div>
+
+<div class="stats">
+
+<div class="stat-card">
+<h2 id="studentsCount">0</h2>
+<p>إجمالي الطلاب</p>
+</div>
+
+</div>
+
+<div class="box">
+
+<h2>➕ إضافة طالب جديد</h2>
+
+<input id="studentNumber" placeholder="الرقم المدرسي">
+
+<input id="name" placeholder="اسم الطالب">
+
+<select id="grade">
 <option value="">اختر الصف</option>
 <option>الأول</option>
 <option>الثاني</option>
@@ -66,17 +173,39 @@ box-shadow:0 0 5px #ccc;
 <option>السابع</option>
 <option>الثامن</option>
 <option>التاسع</option>
-</select><select id="section">
+</select>
+
+<select id="section">
 <option value="">اختر الشعبة</option>
 <option>أ</option>
 <option>ب</option>
-</select><select id="gender">
+</select>
+
+<select id="gender">
 <option value="">اختر الجنس</option>
 <option>ذكر</option>
 <option>أنثى</option>
-</select><input id="parentPhone" placeholder="رقم ولي الأمر"><button onclick="addStudent()">
-➕ إضافة طالب
-</button></div><h2>📋 قائمة الطلاب</h2><div id="list"></div><script type="module">
+</select>
+
+<input id="parentPhone" placeholder="رقم ولي الأمر">
+
+<button onclick="addStudent()">
+➕ إضافة الطالب
+</button>
+
+</div>
+
+<div class="search-box">
+<input id="searchStudent" placeholder="🔍 البحث عن طالب">
+</div>
+
+<h2>📋 قائمة الطلاب</h2>
+
+<div id="list"></div>
+
+</div>
+
+<script type="module">
 
 import {
 auth,
@@ -89,7 +218,6 @@ deleteDoc,
 doc
 } from "./firebase.js";
 
-// حماية الصفحة
 onAuthStateChanged(auth,(user)=>{
 if(!user){
 window.location.href="login.html";
@@ -98,7 +226,6 @@ window.location.href="login.html";
 
 const col = collection(db,"students");
 
-// إضافة طالب
 window.addStudent = async function(){
 
 if(
@@ -120,26 +247,28 @@ gender: gender.value,
 parentPhone: parentPhone.value
 });
 
-// تفريغ الحقول
-studentNumber.value = "";
-name.value = "";
-grade.value = "";
-section.value = "";
-gender.value = "";
-parentPhone.value = "";
+studentNumber.value="";
+name.value="";
+grade.value="";
+section.value="";
+gender.value="";
+parentPhone.value="";
 
 loadStudents();
 
 }
 
-// عرض الطلاب
 async function loadStudents(){
 
 const data = await getDocs(col);
 
-list.innerHTML = "";
+list.innerHTML="";
 
-data.forEach(d => {
+let count = 0;
+
+data.forEach(d=>{
+
+count++;
 
 let s = d.data();
 
@@ -147,24 +276,38 @@ list.innerHTML += `
 <div class="student-card">
 
 <b>🆔 الرقم المدرسي:</b>
-${s.studentNumber || "-"}<br><br>
+${s.studentNumber || "-"}
+
+<br><br>
 
 <b>👨‍🎓 اسم الطالب:</b>
-${s.name || "-"}<br><br>
+${s.name || "-"}
+
+<br><br>
 
 <b>🏫 الصف:</b>
-${s.grade || "-"}<br><br>
+${s.grade || "-"}
+
+<br><br>
 
 <b>📚 الشعبة:</b>
-${s.section || "-"}<br><br>
+${s.section || "-"}
+
+<br><br>
 
 <b>👤 الجنس:</b>
-${s.gender || "-"}<br><br>
+${s.gender || "-"}
 
-<b>📞 رقم ولي الأمر:</b>
-${s.parentPhone || "-"}<br><br>
+<br><br>
 
-<button onclick="deleteStudent('${d.id}')">
+<b>📞 ولي الأمر:</b>
+${s.parentPhone || "-"}
+
+<br><br>
+
+<button
+class="delete-btn"
+onclick="deleteStudent('${d.id}')">
 🗑️ حذف الطالب
 </button>
 
@@ -173,18 +316,17 @@ ${s.parentPhone || "-"}<br><br>
 
 });
 
+document.getElementById("studentsCount").textContent = count;
+
 }
 
-// حذف طالب
 window.deleteStudent = async function(id){
 
-if(!confirm("هل تريد حذف هذا الطالب؟")){
+if(!confirm("هل تريد حذف الطالب؟")){
 return;
 }
 
-await deleteDoc(
-doc(db,"students",id)
-);
+await deleteDoc(doc(db,"students",id));
 
 loadStudents();
 
@@ -192,5 +334,7 @@ loadStudents();
 
 loadStudents();
 
-</script></body>
+</script>
+
+</body>
 </html>
