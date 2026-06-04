@@ -1,5 +1,4 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
 import {
 getAuth,
 signInWithEmailAndPassword,
@@ -13,47 +12,30 @@ collection,
 addDoc,
 getDocs,
 deleteDoc,
-doc,
-updateDoc,
-query,
-where
+doc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-apiKey: "AIzaSyDT_mbvSi516vuugJKi2xbrWmhr_5-Gqag",
-authDomain: "school-system-qaflah.firebaseapp.com",
-projectId: "school-system-qaflah",
-storageBucket: "school-system-qaflah.firebasestorage.app",
-messagingSenderId: "469860732094",
-appId: "1:469860732094:web:21869dd6e6d018c1cbe2ef"
+apiKey: "YOUR_API_KEY",
+authDomain: "YOUR_AUTH_DOMAIN",
+projectId: "YOUR_PROJECT_ID",
+storageBucket: "YOUR_BUCKET",
+messagingSenderId: "YOUR_SENDER_ID",
+appId: "YOUR_APP_ID"
 };
 
-// تشغيل Firebase
 const app = initializeApp(firebaseConfig);
 
-// Authentication
-const auth = getAuth(app);
+export const auth = getAuth(app);
+export const db = getFirestore(app);
 
-// Firestore Database
-const db = getFirestore(app);
-
-// Export
 export {
-auth,
-db,
-
-// Auth
 signInWithEmailAndPassword,
 onAuthStateChanged,
 signOut,
-
-// Firestore
 collection,
 addDoc,
 getDocs,
 deleteDoc,
-doc,
-updateDoc,
-query,
-where
+doc
 };
