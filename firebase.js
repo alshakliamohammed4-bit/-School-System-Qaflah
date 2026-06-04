@@ -16,14 +16,14 @@ deleteDoc,
 doc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* 🔥 ضع بيانات Firebase الخاصة بك هنا */
+/* 🔥 Firebase Config (نفس بياناتك) */
 const firebaseConfig = {
-apiKey: "PUT_API_KEY_HERE",
-authDomain: "PUT_AUTH_DOMAIN",
-projectId: "PUT_PROJECT_ID",
-storageBucket: "PUT_STORAGE_BUCKET",
-messagingSenderId: "PUT_SENDER_ID",
-appId: "PUT_APP_ID"
+apiKey: "AIzaSyDT_mbvSi516vuugJKi2xbrWmhr_5-Gqag",
+authDomain: "school-system-qaflah.firebaseapp.com",
+projectId: "school-system-qaflah",
+storageBucket: "school-system-qaflah.firebasestorage.app",
+messagingSenderId: "469860732094",
+appId: "1:469860732094:web:21869dd6e6d018c1cbe2ef"
 };
 
 /* تشغيل Firebase */
@@ -35,7 +35,7 @@ export const auth = getAuth(app);
 /* Firestore */
 export const db = getFirestore(app);
 
-/* أدوات تستخدمها في كل الصفحات */
+/* أدوات عامة */
 export {
 signInWithEmailAndPassword,
 onAuthStateChanged,
