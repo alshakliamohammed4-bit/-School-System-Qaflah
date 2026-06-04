@@ -1,240 +1,171 @@
 <!DOCTYPE html>
-
 <html lang="ar" dir="rtl">
-
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>لوحة التحكم - نظام قفلة</title>
+<title>Dashboard</title>
 
 <style>
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Segoe UI',Tahoma,sans-serif;
-}
-
 body{
-background:#0f172a;
+margin:0;
+font-family:tahoma;
+background:#0a0f1f;
 color:white;
-min-height:100vh;
 }
 
-.topbar{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:15px 25px;
-background:#111827;
-box-shadow:0 2px 10px rgba(0,0,0,.3);
+.sidebar{
+position:fixed;
+right:0;
+width:220px;
+height:100vh;
+background:#111a2e;
+padding:15px;
 }
 
-.school{
-font-size:22px;
-font-weight:bold;
-}
-
-.logout{
-background:#ef4444;
-color:white;
-padding:12px 18px;
-border:none;
-border-radius:10px;
-cursor:pointer;
-font-weight:bold;
-}
-
-header{
-background:linear-gradient(135deg,#22c55e,#0ea5e9);
-padding:50px 20px;
-text-align:center;
-}
-
-header h1{
-font-size:38px;
-margin-bottom:10px;
-}
-
-header p{
-font-size:18px;
-}
-
-.container{
-max-width:1200px;
-margin:auto;
-padding:25px;
-}
-
-.stats{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:15px;
-margin-bottom:25px;
-}
-
-.stat{
-background:#1e293b;
-padding:25px;
-border-radius:18px;
-text-align:center;
-}
-
-.stat h2{
-font-size:32px;
-color:#22c55e;
-margin-bottom:8px;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:20px;
+.main{
+margin-right:220px;
+padding:20px;
 }
 
 .card{
-background:#1e293b;
-padding:30px;
-border-radius:18px;
-text-align:center;
-text-decoration:none;
-color:white;
-transition:.3s;
-border:1px solid #334155;
-}
-
-.card:hover{
-transform:translateY(-8px);
-background:#22c55e;
-color:black;
-}
-
-.icon{
-font-size:50px;
+background:#111a2e;
+padding:15px;
+border-radius:12px;
 margin-bottom:15px;
 }
 
-.footer{
-text-align:center;
-padding:25px;
-margin-top:30px;
-color:#94a3b8;
+input{
+width:100%;
+padding:10px;
+margin:5px 0;
+border:none;
+border-radius:8px;
+background:#1f2a44;
+color:white;
 }
 
-</style>
+button{
+width:100%;
+padding:10px;
+background:#38bdf8;
+border:none;
+border-radius:8px;
+cursor:pointer;
+}
 
+.student{
+background:#1f2a44;
+padding:10px;
+margin-top:10px;
+border-radius:8px;
+border-right:4px solid #38bdf8;
+}
+
+.stats{
+display:flex;
+gap:10px;
+}
+
+.stat{
+flex:1;
+background:#111a2e;
+padding:10px;
+border-radius:10px;
+text-align:center;
+}
+
+.stat h2{color:#38bdf8;}
+
+</style>
 </head>
 
 <body>
 
-<div class="topbar">
-
-<div class="school">
-🏫 مدرسة قفلة للتعليم الأساسي
+<div class="sidebar">
+<h3>🏫 النظام</h3>
+<button onclick="loadStudents()">📋 الطلاب</button>
 </div>
 
-<button class="logout" onclick="logout()">
-🚪 تسجيل خروج
-</button>
-
-</div>
-
-<header>
-
-<h1>نظام مدرسة قفلة الذكي</h1>
-
-<p>
-إدارة الطلاب • الحضور • الدرجات • الشهادات
-</p>
-
-</header>
-
-<div class="container">
+<div class="main">
 
 <div class="stats">
-
 <div class="stat">
-<h2>250</h2>
-<p>الطلاب</p>
+<h2 id="count">0</h2>
+<p>طلاب</p>
+</div>
 </div>
 
-<div class="stat">
-<h2>18</h2>
-<p>المعلمون</p>
-</div>
+<div class="card">
+<h3>➕ إضافة طالب</h3>
 
-<div class="stat">
-<h2>2027</h2>
-<p>العام الدراسي</p>
-</div>
+<input id="studentNumber" placeholder="الرقم">
+<input id="name" placeholder="الاسم">
+<input id="grade" placeholder="الصف">
 
-<div class="stat">
-<h2>100%</h2>
-<p>جاهزية النظام</p>
-</div>
+<button onclick="addStudent()">حفظ</button>
 
 </div>
 
-<div class="grid">
-
-<a class="card" href="students.html">
-<div class="icon">👨‍🎓</div>
-<h3>إدارة الطلاب</h3>
-</a>
-
-<a class="card" href="grades.html">
-<div class="icon">📝</div>
-<h3>الدرجات</h3>
-</a>
-
-<a class="card" href="attendance.html">
-<div class="icon">📅</div>
-<h3>الحضور والغياب</h3>
-</a>
-
-<a class="card" href="certificate.html">
-<div class="icon">🎓</div>
-<h3>الشهادات</h3>
-</a>
-
-<a class="card" href="results.html">
-<div class="icon">📊</div>
-<h3>النتائج</h3>
-</a>
-
-<a class="card" href="about.html">
-<div class="icon">ℹ️</div>
-<h3>عن النظام</h3>
-</a>
-
-</div>
-
-<div class="footer">
-مدرسة قفلة للتعليم الأساسي © 2027
+<div class="card">
+<h3>📋 القائمة</h3>
+<div id="list"></div>
 </div>
 
 </div>
 
 <script type="module">
 
-import {
-auth,
-onAuthStateChanged,
-signOut
-} from "./firebase.js";
+import { db, collection, addDoc, getDocs, deleteDoc, doc } from "./firebase.js";
 
-onAuthStateChanged(auth,(user)=>{
-if(!user){
-window.location.href="login.html";
-}
+/* ADD */
+window.addStudent = async function () {
+
+await addDoc(collection(db,"students"),{
+studentNumber: studentNumber.value,
+name: name.value,
+grade: grade.value
 });
 
-window.logout = async function(){
-await signOut(auth);
-window.location.href="login.html";
+loadStudents();
 }
+
+/* LOAD */
+window.loadStudents = async function () {
+
+const list = document.getElementById("list");
+list.innerHTML = "";
+
+const data = await getDocs(collection(db,"students"));
+
+document.getElementById("count").innerText = data.size;
+
+data.forEach(d => {
+
+let s = d.data();
+
+list.innerHTML += `
+<div class="student">
+
+<b>${s.name}</b><br>
+${s.grade}
+
+<br><br>
+
+<button onclick="deleteStudent('${d.id}')">حذف</button>
+
+</div>
+`;
+});
+
+}
+
+/* DELETE */
+window.deleteStudent = async function (id) {
+await deleteDoc(doc(db,"students",id));
+loadStudents();
+}
+
+loadStudents();
 
 </script>
 
