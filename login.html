@@ -34,6 +34,7 @@ border-radius:8px;
 button{
 background:#38bdf8;
 cursor:pointer;
+font-weight:bold;
 }
 </style>
 </head>
@@ -54,12 +55,37 @@ cursor:pointer;
 import { auth, signInWithEmailAndPassword } from "./firebase.js";
 
 window.login = async function () {
-try {
-await signInWithEmailAndPassword(auth, email.value, password.value);
-location.href = "dashboard.html";
-} catch (e) {
-alert("خطأ في تسجيل الدخول");
+
+const emailVal = document.getElementById("email").value;
+const passVal = document.getElementById("password").value;
+
+if (!emailVal || !passVal) {
+alert("يرجى إدخال الإيميل وكلمة المرور");
+return;
 }
+
+try {
+
+await signInWithEmailAndPassword(auth, emailVal, passVal);
+
+alert("تم تسجيل الدخول بنجاح");
+location.href = "dashboard.html";
+
+} catch (e) {
+
+console.log("ERROR CODE:", e.code);
+console.log("ERROR MESSAGE:", e.message);
+
+let msg = "خطأ في تسجيل الدخول";
+
+if (e.code === "auth/user-not-found") msg = "المستخدم غير موجود";
+if (e.code === "auth/wrong-password") msg = "كلمة المرور غير صحيحة";
+if (e.code === "auth/invalid-email") msg = "الإيميل غير صحيح";
+if (e.code === "auth/operation-not-allowed") msg = "تسجيل الدخول غير مفعل في Firebase";
+
+alert(msg + "\n\n" + e.message);
+}
+
 }
 
 </script>
