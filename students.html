@@ -18,7 +18,7 @@ return;
 }
 
 try {
-await addDoc(col, {
+await addDoc(collection(db, "students"), {
 studentNumber: studentNumber.value,
 name: name.value,
 grade: grade.value,
